@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation.xml"
     app:startDestination="@id/fragmentPost">
 
     <fragment
         android:id="@+id/fragmentPost"
         android:name="com.nsofronovic.task.ui.post.PostFragment"
-        tools:layout="fragmentPost" />
+        android:label="fragmentPost" >
+        <action
+            android:id="@+id/action_fragmentPost_to_fragmentPostDetails"
+            app:destination="@id/fragmentPostDetails" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentPostDetails"
+        android:name="com.nsofronovic.task.ui.postdetails.PostDetailsFragment"
+        android:label="fragmentDetailsPost"/>
 
 </navigation>
