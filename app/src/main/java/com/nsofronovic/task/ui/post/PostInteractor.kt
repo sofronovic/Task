@@ -1,9 +1,20 @@
 package com.nsofronovic.task.ui.post
 
+import com.nsofronovic.task.repository.PostRepository
 import io.reactivex.Observable
 
-class PostInteractor {
+class PostInteractor(private val postRepository: PostRepository) {
     fun generateInitialPartialState(): Observable<PostPartialState> {
-        return Observable.just(PostPartialState.InitialPartialState)
+        return postRepository.getPosts()
+            .flatMap { posts ->
+                Observable.merge(
+                    Observable.just(PostPartialState.LoadingPostsPartialState),
+                    Observable.just(
+                        (PostPartialState.LoadedPostsPartialState(
+                            posts
+                        ))
+                    )
+                )
+            }.onErrorReturnItem(PostPartialState.ErrorLoadingPostsPartialState)
     }
 }
