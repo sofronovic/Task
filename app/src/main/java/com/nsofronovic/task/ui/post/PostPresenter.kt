@@ -34,8 +34,9 @@ class PostPresenter(val interactor: PostInteractor) :
         partialState: PostPartialState
     ): PostViewState {
         val newState = when (partialState) {
-            is PostPartialState.InitialPartialState -> previousState.copy(
-                lastChangedState = partialState
+            is PostPartialState.LoadedPostsPartialState -> previousState.copy(
+                lastChangedState = partialState,
+                posts = partialState.posts
             )
             else -> previousState.copy(lastChangedState = partialState)
         }

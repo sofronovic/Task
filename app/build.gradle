@@ -18,8 +18,16 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding true
+    }
+
     buildTypes {
+        debug {
+            buildConfigField 'String', 'SERVER_URL_DEBUG', '"https://jsonplaceholder.typicode.com"'
+        }
         release {
+            buildConfigField 'String', 'SERVER_URL_RELEASE', '"https://jsonplaceholder.typicode.com"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -53,6 +61,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
 
     implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.2.0'
     implementation 'com.jakewharton.rxbinding2:rxbinding-support-v4-kotlin:2.2.0'
