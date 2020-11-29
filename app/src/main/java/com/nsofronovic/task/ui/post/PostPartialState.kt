@@ -11,4 +11,6 @@ sealed class PostPartialState {
     object PostsSavedToDatabase : PostPartialState()
     data class ErrorSavingPostsInDatabase(val error: String) : PostPartialState()
     object PostsAlreadyExistsInDatabase : PostPartialState()
+
+    object SwipeToRefresh : PostPartialState()
 }

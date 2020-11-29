@@ -67,4 +67,11 @@ class PostInteractor(
     private fun getPostsFromDatabase(): Single<List<Post>> {
         return postLocalRepository.getAll()
     }
+
+    fun generateSwipeToRefreshPartialState(): Observable<PostPartialState> {
+        return Observable.merge(
+            Observable.just(PostPartialState.SwipeToRefresh),
+            generateInitialPartialState()
+        )
+    }
 }

@@ -17,9 +17,14 @@ class PostPresenter(val interactor: PostInteractor) :
                 interactor.generateInitialPartialState()
             }
 
+        val swipeToRefreshIntent = intent(PostView::swipeToRefreshIntent)
+            .switchMap {
+                interactor.generateSwipeToRefreshPartialState()
+            }
+
         val intentsObservable =
             Observable.mergeArray(
-                initialIntent
+                initialIntent, swipeToRefreshIntent
             ).observeOn(AndroidSchedulers.mainThread())
 
         subscribeViewState(

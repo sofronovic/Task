@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.nsofronovic.task.databinding.FragmentPostBinding
 import com.nsofronovic.task.model.Post
@@ -15,7 +16,7 @@ import io.reactivex.subjects.PublishSubject
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class PostFragment : MviFragment<PostView, PostPresenter>(), PostView {
+class PostFragment : MviFragment<PostView, PostPresenter>(), PostView, SwipeRefreshLayout.OnRefreshListener {
 
     private val presenter: PostPresenter by inject()
 
@@ -24,6 +25,8 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView {
     private lateinit var postAdapter: PostAdapter
 
     private val initialPublishSubject = PublishSubject.create<Unit>()
+
+    private val swipeToRefreshPublishSubject = PublishSubject.create<Unit>()
 
     private var _binding: FragmentPostBinding? = null
 
@@ -36,6 +39,8 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView {
     ): View? {
         _binding = FragmentPostBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        binding.swipeToRefresh.setOnRefreshListener(this)
 
         initPostAdapter()
 
@@ -81,6 +86,15 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView {
 
     override fun initialIntent(): Observable<Unit> {
         return initialPublishSubject
+    }
+
+    override fun swipeToRefreshIntent(): Observable<Unit> {
+        return swipeToRefreshPublishSubject
+    }
+
+    override fun onRefresh() {
+        binding.swipeToRefresh.isRefreshing = false
+        swipeToRefreshPublishSubject.onNext(Unit)
     }
 
     private fun initPostAdapter() {
