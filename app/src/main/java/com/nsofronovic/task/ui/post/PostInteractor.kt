@@ -1,20 +1,70 @@
 package com.nsofronovic.task.ui.post
 
-import com.nsofronovic.task.repository.PostRepository
+import com.nsofronovic.task.model.Post
+import com.nsofronovic.task.repository.local.PostLocalRepository
+import com.nsofronovic.task.repository.remote.PostRepository
+import com.nsofronovic.task.util.NetworkUtil
 import io.reactivex.Observable
+import io.reactivex.Single
 
-class PostInteractor(private val postRepository: PostRepository) {
+class PostInteractor(
+    private val postRepository: PostRepository,
+    private val postLocalRepository: PostLocalRepository,
+    private val networkUtil: NetworkUtil
+) {
     fun generateInitialPartialState(): Observable<PostPartialState> {
-        return postRepository.getPosts()
-            .flatMap { posts ->
-                Observable.merge(
-                    Observable.just(PostPartialState.LoadingPostsPartialState),
-                    Observable.just(
-                        (PostPartialState.LoadedPostsPartialState(
-                            posts
-                        ))
+        return networkUtil.isConnectedToInternet()
+            .flatMapObservable { isConnected ->
+                if (isConnected) {
+                    postRepository.getPosts()
+                        .flatMap { posts ->
+                            Observable.merge(
+                                Observable.just(PostPartialState.LoadingPosts),
+                                savePostsToDatabasePartialState(posts),
+                                Observable.just(
+                                    PostPartialState.LoadedPosts(posts)
+                                )
+                            )
+                        }.onErrorReturn { throwable ->
+                            throwable.message?.let { errorMessage ->
+                                PostPartialState.ErrorLoadingPosts(errorMessage)
+                            }
+                        }
+                } else {
+                    Observable.merge(
+                        Observable.just(PostPartialState.LoadingPosts),
+                        getPostsFromDatabase()
+                            .flatMapObservable {
+                                Observable.just(PostPartialState.LoadedPostsFromDatabase(it))
+                            }
                     )
-                )
-            }.onErrorReturnItem(PostPartialState.ErrorLoadingPostsPartialState)
+                }
+            }
+    }
+
+    private fun savePostsToDatabasePartialState(posts: List<Post>): Observable<PostPartialState> {
+        return getPostsFromDatabase()
+            .flatMapObservable { postsFromDb ->
+                if (postsFromDb.isNullOrEmpty()) {
+                    postLocalRepository.insertAll(*posts.toTypedArray())
+                        .flatMapObservable {
+                            Observable.just(PostPartialState.PostsSavedToDatabase)
+                        }
+                } else {
+                    Observable.just(
+                        PostPartialState.PostsAlreadyExistsInDatabase
+                    )
+                }
+            }.onErrorReturn { throwable ->
+                throwable.message?.let { errorMessage ->
+                    PostPartialState.ErrorSavingPostsInDatabase(
+                        errorMessage
+                    )
+                }
+            }
+    }
+
+    private fun getPostsFromDatabase(): Single<List<Post>> {
+        return postLocalRepository.getAll()
     }
 }

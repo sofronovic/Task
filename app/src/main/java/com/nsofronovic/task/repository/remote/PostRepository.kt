@@ -1,4 +1,4 @@
-package com.nsofronovic.task.repository
+package com.nsofronovic.task.repository.remote
 
 import com.nsofronovic.task.model.Post
 import com.nsofronovic.task.model.User
