@@ -6,4 +6,5 @@ import io.reactivex.Observable
 interface PostView : MvpView {
     fun render(state: PostViewState)
     fun initialIntent(): Observable<Unit>
+    fun swipeToRefreshIntent(): Observable<Unit>
 }
