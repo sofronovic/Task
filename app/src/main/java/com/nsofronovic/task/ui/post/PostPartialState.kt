@@ -13,4 +13,10 @@ sealed class PostPartialState {
     object PostsAlreadyExistsInDatabase : PostPartialState()
 
     object SwipeToRefresh : PostPartialState()
+
+    object OnPause : PostPartialState()
+
+    object LoadedPostsFromState : PostPartialState()
+
+    object PostClicked : PostPartialState()
 }

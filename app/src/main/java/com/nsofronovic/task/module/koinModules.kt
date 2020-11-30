@@ -6,10 +6,15 @@ import com.nsofronovic.task.db.AppDatabase
 import com.nsofronovic.task.network.PostApi
 import com.nsofronovic.task.repository.local.PostLocalRepository
 import com.nsofronovic.task.repository.local.PostLocalRepositoryImpl
+import com.nsofronovic.task.repository.local.UserLocalRepository
+import com.nsofronovic.task.repository.local.UserLocalRepositoryImpl
 import com.nsofronovic.task.repository.remote.PostRepository
+import com.nsofronovic.task.repository.remote.UserRepository
 import com.nsofronovic.task.ui.navigation.NavigationManager
 import com.nsofronovic.task.ui.post.PostInteractor
 import com.nsofronovic.task.ui.post.PostPresenter
+import com.nsofronovic.task.ui.postdetails.PostDetailsInteractor
+import com.nsofronovic.task.ui.postdetails.PostDetailsPresenter
 import com.nsofronovic.task.util.NetworkUtil
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
@@ -20,6 +25,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 val mviModule = module {
     factory { PostPresenter(get()) }
     factory { PostInteractor(get(), get(), get()) }
+
+    factory { PostDetailsPresenter(get()) }
+    factory { PostDetailsInteractor(get(), get(), get(), get()) }
 }
 
 val appModule = module {
@@ -27,6 +35,9 @@ val appModule = module {
 
     single { PostLocalRepositoryImpl(get()) as PostLocalRepository }
     single { PostRepository(get()) }
+
+    single { UserLocalRepositoryImpl(get()) as UserLocalRepository }
+    single { UserRepository(get()) }
 }
 
 fun networkModule(baseUrl: String) = module {
@@ -59,4 +70,5 @@ fun dbModule(context: Context, dbName: String) = module {
     }
 
     factory { get<AppDatabase>().postDao() }
+    factory { get<AppDatabase>().userDao() }
 }

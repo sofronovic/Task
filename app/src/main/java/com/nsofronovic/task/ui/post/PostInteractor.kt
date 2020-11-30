@@ -74,4 +74,17 @@ class PostInteractor(
             generateInitialPartialState()
         )
     }
+
+    fun generatePostClickPartialState(post: Post?): Observable<PostPartialState> {
+        post?.let { postLocalRepository.setCurrentPost(it) }
+        return Observable.just(PostPartialState.PostClicked)
+    }
+
+    fun generateOnPausePartialState(): Observable<PostPartialState> {
+        return Observable.just(PostPartialState.OnPause)
+    }
+
+    fun generateLoadPostsFromStatePartialState(): Observable<PostPartialState> {
+        return Observable.just(PostPartialState.LoadedPostsFromState)
+    }
 }
