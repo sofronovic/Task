@@ -11,12 +11,14 @@ import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.nsofronovic.task.databinding.FragmentPostBinding
 import com.nsofronovic.task.model.Post
 import com.nsofronovic.task.ui.adapters.PostAdapter
+import com.nsofronovic.task.ui.navigation.NavigationManager
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class PostFragment : MviFragment<PostView, PostPresenter>(), PostView, SwipeRefreshLayout.OnRefreshListener {
+class PostFragment : MviFragment<PostView, PostPresenter>(), PostView,
+    SwipeRefreshLayout.OnRefreshListener {
 
     private val presenter: PostPresenter by inject()
 
@@ -28,9 +30,13 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView, SwipeRefr
 
     private val swipeToRefreshPublishSubject = PublishSubject.create<Unit>()
 
+    private val onPausePublishSubject = PublishSubject.create<Unit>()
+
     private var _binding: FragmentPostBinding? = null
 
     private val binding get() = _binding!!
+
+    private val navigationManager: NavigationManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +58,11 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView, SwipeRefr
         initialPublishSubject.onNext(Unit)
     }
 
+    override fun onPause() {
+        super.onPause()
+        onPausePublishSubject.onNext(Unit)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -64,6 +75,7 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView, SwipeRefr
         when (state.lastChangedState) {
             is PostPartialState.LoadingPosts -> {
                 binding.progressBar.visibility = View.VISIBLE
+                binding.tvError.visibility = View.GONE
             }
             is PostPartialState.LoadedPosts -> {
                 binding.progressBar.visibility = View.GONE
@@ -81,6 +93,17 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView, SwipeRefr
                 binding.progressBar.visibility = View.GONE
                 binding.tvError.visibility = View.VISIBLE
             }
+            is PostPartialState.PostClicked -> {
+                state.posts?.let {
+                    navigationManager.openPostDetailsScreen()
+                }
+            }
+            is PostPartialState.LoadedPostsFromState -> {
+                binding.progressBar.visibility = View.GONE
+                state.posts?.let { posts ->
+                    setData(posts)
+                }
+            }
         }
     }
 
@@ -92,9 +115,17 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView, SwipeRefr
         return swipeToRefreshPublishSubject
     }
 
+    override fun onPostClickIntent(): Observable<Int> {
+        return postAdapter.postClickListener
+    }
+
     override fun onRefresh() {
         binding.swipeToRefresh.isRefreshing = false
         swipeToRefreshPublishSubject.onNext(Unit)
+    }
+
+    override fun onPauseIntent(): Observable<Unit> {
+        return onPausePublishSubject
     }
 
     private fun initPostAdapter() {

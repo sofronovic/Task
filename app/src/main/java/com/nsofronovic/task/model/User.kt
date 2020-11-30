@@ -1,10 +1,17 @@
 package com.nsofronovic.task.model
 
-import com.google.gson.annotations.SerializedName
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity
 data class User (
-	@SerializedName("id") val id : Int,
-	@SerializedName("name") val name : String,
-	@SerializedName("username") val username : String,
-	@SerializedName("email") val email : String
+	@PrimaryKey
+	val id : Int,
+
+	@ColumnInfo(name = "user_name")
+	val name : String,
+
+	@ColumnInfo(name ="user_email")
+	val email : String
 )

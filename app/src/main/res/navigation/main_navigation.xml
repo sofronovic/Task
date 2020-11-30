@@ -10,12 +10,17 @@
         android:label="fragmentPost" >
         <action
             android:id="@+id/action_fragmentPost_to_fragmentPostDetails"
-            app:destination="@id/fragmentPostDetails" />
+            app:destination="@id/fragmentPostDetails"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/fragmentPost" />
     </fragment>
 
     <fragment
         android:id="@+id/fragmentPostDetails"
         android:name="com.nsofronovic.task.ui.postdetails.PostDetailsFragment"
-        android:label="fragmentDetailsPost"/>
+        android:label="fragmentDetailsPost">
+
+    </fragment>
 
 </navigation>
