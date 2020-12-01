@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Task</string>
     <string name="network_error_message">An error occurred while loading data from server</string>
+    <string name="remove_post">REMOVE</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="no_internet_connection_message">No internet connection found.</string>
+    <string name="no_internet_connection_message_details">Please check your internet settings.</string>
+    <string name="deleted_post">Post deleted successfully</string>
+    <string name="nothing_to_delete">Nothing to delete</string>
 </resources>

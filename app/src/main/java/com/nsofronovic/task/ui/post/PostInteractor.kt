@@ -31,13 +31,21 @@ class PostInteractor(
                             }
                         }
                 } else {
-                    Observable.merge(
-                        Observable.just(PostPartialState.LoadingPosts),
-                        getPostsFromDatabase()
-                            .flatMapObservable {
-                                Observable.just(PostPartialState.LoadedPostsFromDatabase(it))
+                    getPostsFromDatabase()
+                        .flatMapObservable { postsFromDb ->
+                            if (postsFromDb.isNullOrEmpty()) {
+                                Observable.just(PostPartialState.NoInternetConnection)
+                            } else {
+                                Observable.merge(
+                                    Observable.just(PostPartialState.LoadingPosts),
+                                    Observable.just(
+                                        PostPartialState.LoadedPostsFromDatabase(
+                                            postsFromDb
+                                        )
+                                    )
+                                )
                             }
-                    )
+                        }
                 }
             }
     }
@@ -84,7 +92,15 @@ class PostInteractor(
         return Observable.just(PostPartialState.OnPause)
     }
 
-    fun generateLoadPostsFromStatePartialState(): Observable<PostPartialState> {
-        return Observable.just(PostPartialState.LoadedPostsFromState)
+    fun generateLoadPostsFromStatePartialState(posts: List<Post>): Observable<PostPartialState> {
+        val removedPost = postLocalRepository.getDeletedPost()
+        val newPostList = posts.toMutableList()
+        if (removedPost != null) {
+            val removedPostPosition = posts.indexOf(removedPost)
+            newPostList.removeAt(removedPostPosition)
+            postLocalRepository.setDeletedPost(null)
+        }
+
+        return Observable.just(PostPartialState.LoadedPostsFromState(newPostList))
     }
 }

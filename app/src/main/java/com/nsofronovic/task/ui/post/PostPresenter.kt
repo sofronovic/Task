@@ -16,7 +16,9 @@ class PostPresenter(val interactor: PostInteractor) :
                 if (currentState.posts.isNullOrEmpty()) {
                     interactor.generateInitialPartialState()
                 } else {
-                    interactor.generateLoadPostsFromStatePartialState()
+                    currentState.posts?.let { posts ->
+                        interactor.generateLoadPostsFromStatePartialState(posts)
+                    }
                 }
             }
 
@@ -64,7 +66,8 @@ class PostPresenter(val interactor: PostInteractor) :
                 lastChangedState = partialState
             )
             is PostPartialState.LoadedPostsFromState -> previousState.copy(
-                lastChangedState = partialState
+                lastChangedState = partialState,
+                posts = partialState.posts
             )
             else -> previousState.copy(lastChangedState = partialState)
         }

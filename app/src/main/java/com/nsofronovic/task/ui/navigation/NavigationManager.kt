@@ -13,4 +13,8 @@ class NavigationManager {
         activity.findNavController(R.id.navHostFragment)
             .navigate(PostFragmentDirections.actionFragmentPostToFragmentPostDetails())
     }
+
+    fun goBack() {
+        activity.findNavController(R.id.navHostFragment).popBackStack()
+    }
 }

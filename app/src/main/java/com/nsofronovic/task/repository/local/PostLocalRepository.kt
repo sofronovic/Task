@@ -9,15 +9,20 @@ import io.reactivex.schedulers.Schedulers
 interface PostLocalRepository {
     fun getAll(): Single<List<Post>>
     fun insertAll(vararg posts: Post): Single<List<Long>>
-    fun delete(post: Post)
+    fun delete(post: Post): Single<Int>
 
     fun setCurrentPost(post: Post)
     fun getCurrentPost(): Post
+
+    fun getDeletedPost(): Post?
+    fun setDeletedPost(post: Post?)
 }
 
-class PostLocalRepositoryImpl(private val postDao: PostDao) : PostLocalRepository{
+class PostLocalRepositoryImpl(private val postDao: PostDao) : PostLocalRepository {
 
     private lateinit var currentPost: Post
+
+    private var deletedPost: Post? = null
 
     override fun getAll(): Single<List<Post>> {
         return postDao.getAll()
@@ -31,8 +36,10 @@ class PostLocalRepositoryImpl(private val postDao: PostDao) : PostLocalRepositor
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    override fun delete(post: Post) {
-        postDao.delete(post)
+    override fun delete(post: Post): Single<Int> {
+        return postDao.delete(post)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun setCurrentPost(post: Post) {
@@ -43,4 +50,11 @@ class PostLocalRepositoryImpl(private val postDao: PostDao) : PostLocalRepositor
         return currentPost
     }
 
+    override fun getDeletedPost(): Post? {
+        return deletedPost
+    }
+
+    override fun setDeletedPost(post: Post?) {
+        deletedPost = post
+    }
 }
