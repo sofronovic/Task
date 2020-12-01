@@ -4,6 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/clNoInternet"
+        layout="@layout/no_internet_connection" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -41,7 +45,7 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/network_error_message"
-            android:textColor="#DC0000"
+            android:textColor="@color/design_default_color_error"
             android:textSize="16sp"
             android:textStyle="bold"
             android:visibility="gone"

@@ -16,8 +16,13 @@ class PostDetailsPresenter(private val interactor: PostDetailsInteractor) :
                 interactor.generateInitialPartialState()
             }
 
+        val deletePost = intent(PostDetailsView::deletePostIntent)
+            .switchMap {
+                interactor.generateDeletePostPartialState()
+            }
+
         val intentsObservable =
-            Observable.mergeArray(initialIntent)
+            Observable.mergeArray(initialIntent, deletePost)
 
         subscribeViewState(
             intentsObservable.scan<PostDetailsViewState>(

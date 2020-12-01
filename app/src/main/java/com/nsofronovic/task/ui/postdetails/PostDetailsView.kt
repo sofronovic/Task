@@ -6,4 +6,5 @@ import io.reactivex.Observable
 interface PostDetailsView : MvpView {
     fun render(state: PostDetailsViewState)
     fun initialIntent(): Observable<Unit>
+    fun deletePostIntent(): Observable<Unit>
 }

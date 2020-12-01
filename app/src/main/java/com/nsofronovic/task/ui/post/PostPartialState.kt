@@ -12,11 +12,12 @@ sealed class PostPartialState {
     data class ErrorSavingPostsInDatabase(val error: String) : PostPartialState()
     object PostsAlreadyExistsInDatabase : PostPartialState()
 
+    data class LoadedPostsFromState(val posts: List<Post>) : PostPartialState()
+
     object SwipeToRefresh : PostPartialState()
 
     object OnPause : PostPartialState()
 
-    object LoadedPostsFromState : PostPartialState()
-
     object PostClicked : PostPartialState()
+    object NoInternetConnection : PostPartialState()
 }

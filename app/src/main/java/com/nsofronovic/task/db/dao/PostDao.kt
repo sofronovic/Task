@@ -16,5 +16,5 @@ interface PostDao {
     fun insertAll(vararg posts: Post): Single<List<Long>>
 
     @Delete
-    fun delete(post: Post)
+    fun delete(post: Post): Single<Int>
 }

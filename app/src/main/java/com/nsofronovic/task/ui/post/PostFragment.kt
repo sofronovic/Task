@@ -75,6 +75,7 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView,
         when (state.lastChangedState) {
             is PostPartialState.LoadingPosts -> {
                 binding.progressBar.visibility = View.VISIBLE
+                binding.clNoInternet.root.visibility = View.GONE
                 binding.tvError.visibility = View.GONE
             }
             is PostPartialState.LoadedPosts -> {
@@ -92,6 +93,7 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView,
             is PostPartialState.ErrorLoadingPosts -> {
                 binding.progressBar.visibility = View.GONE
                 binding.tvError.visibility = View.VISIBLE
+                binding.clNoInternet.root.visibility = View.GONE
             }
             is PostPartialState.PostClicked -> {
                 state.posts?.let {
@@ -103,6 +105,11 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView,
                 state.posts?.let { posts ->
                     setData(posts)
                 }
+            }
+            is PostPartialState.NoInternetConnection -> {
+                binding.clNoInternet.root.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.GONE
+                binding.tvError.visibility = View.GONE
             }
         }
     }

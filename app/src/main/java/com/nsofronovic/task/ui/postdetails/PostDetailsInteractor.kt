@@ -30,7 +30,7 @@ class PostDetailsInteractor(
                             Observable.just(
                                 PostDetailsPartialState.LoadedPostDetails(
                                     PostDetailsData(
-                                        id = currentPost.userId,
+                                        id = currentPost.id,
                                         title = currentPost.title,
                                         body = currentPost.body,
                                         name = user.name,
@@ -45,14 +45,15 @@ class PostDetailsInteractor(
                         }
                     }
                 } else {
-                    Observable.merge(
-                        Observable.just(PostDetailsPartialState.LoadingUser),
-                        getUserFromDatabase(currentPost.userId)
-                            .flatMapObservable { user ->
+                    getUserFromDatabase(currentPost.userId)
+                        .toSingle()
+                        .flatMapObservable { user ->
+                            Observable.merge(
+                                Observable.just(PostDetailsPartialState.LoadingUser),
                                 Observable.just(
                                     PostDetailsPartialState.LoadedPostDetails(
                                         PostDetailsData(
-                                            id = currentPost.userId,
+                                            id = currentPost.id,
                                             title = currentPost.title,
                                             body = currentPost.body,
                                             name = user.name,
@@ -60,8 +61,10 @@ class PostDetailsInteractor(
                                         )
                                     )
                                 )
-                            }
-                    )
+                            )
+                        }.onErrorReturn {
+                            PostDetailsPartialState.NoInternetConnection
+                        }
                 }
             }
     }
@@ -86,6 +89,18 @@ class PostDetailsInteractor(
 
     private fun getUserFromDatabase(userId: Int): Maybe<User> {
         return userLocalRepository.getUserById(userId)
+    }
+
+    fun generateDeletePostPartialState(): Observable<PostDetailsPartialState> {
+        val currentPost = localPostRepository.getCurrentPost()
+        return localPostRepository.delete(currentPost).flatMapObservable { deletedRows ->
+                if (deletedRows > 0) {
+                    localPostRepository.setDeletedPost(currentPost)
+                    Observable.just(PostDetailsPartialState.DeletedPostFromDatabase)
+                } else {
+                    Observable.just(PostDetailsPartialState.FailedToDeletePost)
+                }
+            }
     }
 
 }
