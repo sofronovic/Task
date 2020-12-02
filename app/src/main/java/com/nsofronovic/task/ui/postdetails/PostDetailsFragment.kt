@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import com.hannesdorfmann.mosby3.mvi.MviFragment
+import com.jakewharton.rxbinding2.view.RxView
 import com.jakewharton.rxbinding2.view.clicks
 import com.nsofronovic.task.R
 import com.nsofronovic.task.databinding.FragmentPostDetailsBinding
@@ -24,8 +25,6 @@ class PostDetailsFragment : MviFragment<PostDetailsView, PostDetailsPresenter>()
 
     private val initialPublishSubject = PublishSubject.create<Unit>()
 
-    private val deletePostPublishSubject = PublishSubject.create<Unit>()
-
     private var _binding: FragmentPostDetailsBinding? = null
 
     private val binding get() = _binding!!
@@ -41,14 +40,6 @@ class PostDetailsFragment : MviFragment<PostDetailsView, PostDetailsPresenter>()
         val view = binding.root
 
         return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.btnDeletePost.clicks()
-            .throttleFirst(500, TimeUnit.MILLISECONDS)
-            .subscribe(deletePostPublishSubject)
     }
 
     override fun onResume() {
@@ -96,7 +87,8 @@ class PostDetailsFragment : MviFragment<PostDetailsView, PostDetailsPresenter>()
     }
 
     override fun deletePostIntent(): Observable<Unit> {
-        return deletePostPublishSubject
+        return binding.btnDeletePost.clicks()
+            .throttleFirst(500, TimeUnit.MILLISECONDS)
     }
 
     private fun setData(postDetails: PostDetailsData) {

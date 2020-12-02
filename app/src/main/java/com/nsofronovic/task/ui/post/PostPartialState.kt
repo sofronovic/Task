@@ -10,7 +10,7 @@ sealed class PostPartialState {
     data class LoadedPostsFromDatabase(val posts: List<Post>) : PostPartialState()
     object PostsSavedToDatabase : PostPartialState()
     data class ErrorSavingPostsInDatabase(val error: String) : PostPartialState()
-    object PostsAlreadyExistsInDatabase : PostPartialState()
+    object NoPostsAddedToDatabase : PostPartialState()
 
     data class LoadedPostsFromState(val posts: List<Post>) : PostPartialState()
 

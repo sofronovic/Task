@@ -1,9 +1,6 @@
 package com.nsofronovic.task.db.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.nsofronovic.task.model.Post
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -13,7 +10,7 @@ interface PostDao {
     @Query("SELECT * FROM post")
     fun getAll(): Single<List<Post>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg posts: Post): Single<List<Long>>
 
     @Delete
