@@ -10,6 +10,8 @@ import com.nsofronovic.task.repository.local.UserLocalRepository
 import com.nsofronovic.task.repository.local.UserLocalRepositoryImpl
 import com.nsofronovic.task.repository.remote.PostRepository
 import com.nsofronovic.task.repository.remote.UserRepository
+import com.nsofronovic.task.service.DatabaseService
+import com.nsofronovic.task.service.ServiceManager
 import com.nsofronovic.task.ui.navigation.NavigationManager
 import com.nsofronovic.task.ui.post.PostInteractor
 import com.nsofronovic.task.ui.post.PostPresenter
@@ -32,6 +34,7 @@ val mviModule = module {
 
 val appModule = module {
     single { NavigationManager() }
+    single { ServiceManager() }
 
     single { PostLocalRepositoryImpl(get()) as PostLocalRepository }
     single { PostRepository(get()) }
@@ -61,7 +64,7 @@ fun networkModule(baseUrl: String) = module {
 }
 
 fun dbModule(context: Context, dbName: String) = module {
-    factory {
+    single {
         Room.databaseBuilder(
             context,
             AppDatabase::class.java,
@@ -69,6 +72,6 @@ fun dbModule(context: Context, dbName: String) = module {
         ).build()
     }
 
-    factory { get<AppDatabase>().postDao() }
-    factory { get<AppDatabase>().userDao() }
+    single { get<AppDatabase>().postDao() }
+    single { get<AppDatabase>().userDao() }
 }

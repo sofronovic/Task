@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.nsofronovic.task.model.Post
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 @Dao
@@ -17,4 +18,7 @@ interface PostDao {
 
     @Delete
     fun delete(post: Post): Single<Int>
+
+    @Query("DELETE FROM post")
+    fun deleteAll(): Single<Int>
 }

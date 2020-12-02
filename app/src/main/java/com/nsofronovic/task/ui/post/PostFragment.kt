@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.nsofronovic.task.databinding.FragmentPostBinding
 import com.nsofronovic.task.model.Post
+import com.nsofronovic.task.service.ServiceManager
 import com.nsofronovic.task.ui.adapters.PostAdapter
 import com.nsofronovic.task.ui.navigation.NavigationManager
 import io.reactivex.Observable
@@ -32,11 +33,15 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView,
 
     private val onPausePublishSubject = PublishSubject.create<Unit>()
 
+    private val startServicePublishSubject = PublishSubject.create<Unit>()
+
     private var _binding: FragmentPostBinding? = null
 
     private val binding get() = _binding!!
 
     private val navigationManager: NavigationManager by inject()
+
+    private val serviceManager: ServiceManager by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,15 +95,19 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView,
                     setData(data)
                 }
             }
+            is PostPartialState.PostsSavedToDatabase -> {
+                startServicePublishSubject.onNext(Unit)
+            }
+            is PostPartialState.StartDatabaseService -> {
+                serviceManager.startService()
+            }
             is PostPartialState.ErrorLoadingPosts -> {
                 binding.progressBar.visibility = View.GONE
                 binding.tvError.visibility = View.VISIBLE
                 binding.clNoInternet.root.visibility = View.GONE
             }
             is PostPartialState.PostClicked -> {
-                state.posts?.let {
-                    navigationManager.openPostDetailsScreen()
-                }
+                navigationManager.openPostDetailsScreen()
             }
             is PostPartialState.LoadedPostsFromState -> {
                 binding.progressBar.visibility = View.GONE
@@ -107,9 +116,11 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView,
                 }
             }
             is PostPartialState.NoInternetConnection -> {
-                binding.clNoInternet.root.visibility = View.VISIBLE
-                binding.progressBar.visibility = View.GONE
-                binding.tvError.visibility = View.GONE
+                if (state.posts.isNullOrEmpty()) {
+                    binding.clNoInternet.root.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.GONE
+                    binding.tvError.visibility = View.GONE
+                }
             }
         }
     }
@@ -133,6 +144,10 @@ class PostFragment : MviFragment<PostView, PostPresenter>(), PostView,
 
     override fun onPauseIntent(): Observable<Unit> {
         return onPausePublishSubject
+    }
+
+    override fun startServiceIntent(): Observable<Unit> {
+        return startServicePublishSubject
     }
 
     private fun initPostAdapter() {

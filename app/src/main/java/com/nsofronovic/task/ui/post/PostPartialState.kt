@@ -20,4 +20,5 @@ sealed class PostPartialState {
 
     object PostClicked : PostPartialState()
     object NoInternetConnection : PostPartialState()
+    object StartDatabaseService : PostPartialState()
 }

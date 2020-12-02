@@ -3,7 +3,7 @@ package com.nsofronovic.task.ui.post
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
 
-class PostPresenter(val interactor: PostInteractor) :
+class PostPresenter(private val interactor: PostInteractor) :
     MviBasePresenter<PostView, PostViewState>() {
 
     private lateinit var currentState: PostViewState
@@ -37,9 +37,18 @@ class PostPresenter(val interactor: PostInteractor) :
                 interactor.generateOnPausePartialState()
             }
 
+        val startServiceIntent = intent(PostView::startServiceIntent)
+            .switchMap {
+                interactor.generateStartServiceIntent()
+            }
+
         val intentsObservable =
             Observable.mergeArray(
-                initialIntent, swipeToRefreshIntent, onPostClickIntent, onPauseIntent
+                initialIntent,
+                swipeToRefreshIntent,
+                onPostClickIntent,
+                onPauseIntent,
+                startServiceIntent
             )
 
         subscribeViewState(
