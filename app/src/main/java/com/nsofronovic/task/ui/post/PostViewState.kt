@@ -1,6 +1,7 @@
 package com.nsofronovic.task.ui.post
 
 import com.nsofronovic.task.model.Post
+
 /**
  * PostViewState represents model as a state
  *

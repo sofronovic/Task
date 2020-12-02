@@ -1,6 +1,7 @@
 package com.nsofronovic.task.ui.post
 
 import com.nsofronovic.task.model.Post
+
 /**
  * PostPartialState holds objects and data classes to represent state
  *
