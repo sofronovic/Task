@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/fragmentPost"
         android:name="com.nsofronovic.task.ui.post.PostFragment"
-        android:label="fragmentPost" >
+        android:label="fragmentPost">
         <action
             android:id="@+id/action_fragmentPost_to_fragmentPostDetails"
             app:destination="@id/fragmentPostDetails"

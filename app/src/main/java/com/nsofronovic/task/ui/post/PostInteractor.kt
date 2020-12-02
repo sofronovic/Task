@@ -3,7 +3,6 @@ package com.nsofronovic.task.ui.post
 import com.nsofronovic.task.model.Post
 import com.nsofronovic.task.repository.local.PostLocalRepository
 import com.nsofronovic.task.repository.remote.PostRepository
-import com.nsofronovic.task.service.DatabaseService
 import com.nsofronovic.task.util.NetworkUtil
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -52,23 +51,16 @@ class PostInteractor(
     }
 
     private fun savePostsToDatabasePartialState(posts: List<Post>): Observable<PostPartialState> {
-        return getPostsFromDatabase()
-            .flatMapObservable { postsFromDb ->
-                if (postsFromDb.isNullOrEmpty()) {
-                    postLocalRepository.insertAll(*posts.toTypedArray())
-                        .flatMapObservable {
-                            Observable.just(PostPartialState.PostsSavedToDatabase)
-                        }
+        return postLocalRepository.insertAll(*posts.toTypedArray())
+            .flatMapObservable { ids ->
+                if (ids.isNullOrEmpty()) {
+                    Observable.just(PostPartialState.NoPostsAddedToDatabase)
                 } else {
-                    Observable.just(
-                        PostPartialState.PostsAlreadyExistsInDatabase
-                    )
+                    Observable.just(PostPartialState.PostsSavedToDatabase)
                 }
             }.onErrorReturn { throwable ->
                 throwable.message?.let { errorMessage ->
-                    PostPartialState.ErrorSavingPostsInDatabase(
-                        errorMessage
-                    )
+                    PostPartialState.ErrorSavingPostsInDatabase(errorMessage)
                 }
             }
     }
@@ -104,7 +96,10 @@ class PostInteractor(
             postLocalRepository.setDeletedPost(null)
         }
 
-        return Observable.just(PostPartialState.LoadedPostsFromState(newPostList))
+        return Observable.merge(
+            Observable.just(PostPartialState.LoadingPosts),
+            Observable.just(PostPartialState.LoadedPostsFromState(newPostList))
+        )
     }
 
     fun generateStartServiceIntent(): Observable<PostPartialState> {

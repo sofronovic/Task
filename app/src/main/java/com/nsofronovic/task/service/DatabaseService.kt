@@ -6,15 +6,17 @@ import androidx.core.app.JobIntentService
 import com.nsofronovic.task.repository.local.PostLocalRepository
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import kotlin.random.Random
 
 class DatabaseService : JobIntentService() {
 
     private val postLocalRepository: PostLocalRepository by inject()
 
-    private val DATA_VALIDITY_TIME = 300000L
+    private val dataValidityTime = 300000L
 
     companion object {
-        const val JOB_ID = 1000
+        var isServiceRunning = false
+        private const val JOB_ID = 1000
 
         fun enqueueWork(context: Context, work: Intent) {
             enqueueWork(context, DatabaseService::class.java, JOB_ID, work)
@@ -23,10 +25,10 @@ class DatabaseService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         Timber.d("Starting background service")
-
         try {
+            isServiceRunning = true
             Timber.d("Thread sleep")
-            Thread.sleep(DATA_VALIDITY_TIME)
+            Thread.sleep(dataValidityTime)
             Timber.d("Thread is awake")
             Timber.d("Deleting posts...")
             postLocalRepository.deleteAll().subscribe()
@@ -37,6 +39,7 @@ class DatabaseService : JobIntentService() {
 
     override fun onDestroy() {
         super.onDestroy()
+        isServiceRunning = false
         Timber.d("Service job is done!")
     }
 }
