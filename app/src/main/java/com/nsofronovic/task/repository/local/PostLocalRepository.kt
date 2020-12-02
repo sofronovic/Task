@@ -8,7 +8,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 /*
- * UserLocalRepository abstraction layer over database calls
+ * PostLocalRepository abstraction layer over database calls
  *
  **/
 interface PostLocalRepository {
