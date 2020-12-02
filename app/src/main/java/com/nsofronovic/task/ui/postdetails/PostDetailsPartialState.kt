@@ -2,6 +2,10 @@ package com.nsofronovic.task.ui.postdetails
 
 import com.nsofronovic.task.model.PostDetailsData
 
+/**
+ * PostDetailsPartialState holds objects and data classes to represent state
+ *
+ **/
 sealed class PostDetailsPartialState {
     object LoadingUser : PostDetailsPartialState()
     object UserAlreadyExistsInDatabase : PostDetailsPartialState()

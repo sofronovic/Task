@@ -19,6 +19,10 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
+/**
+ * PostDetailsFragment represents UI interface where post details should be displayed
+ *
+ **/
 class PostDetailsFragment : MviFragment<PostDetailsView, PostDetailsPresenter>(), PostDetailsView {
 
     private val presenter: PostDetailsPresenter by inject()

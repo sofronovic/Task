@@ -9,6 +9,12 @@ import com.nsofronovic.task.util.NetworkUtil
 import io.reactivex.Maybe
 import io.reactivex.Observable
 
+/**
+ * PostDetailsInteractor is defined as placeholder for business logic.
+ * PostDetailsInteractor offers the Observables stream Observable<PostPartialState> and
+ * broadcast a new PostPartialState each time the state changes.
+ *
+ **/
 class PostDetailsInteractor(
     private val userRepository: UserRepository,
     private val localPostRepository: PostLocalRepository,
