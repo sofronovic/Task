@@ -6,6 +6,10 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
+/*
+ * UserRepository abstraction layer over API calls
+ *
+ **/
 class UserRepository(private val postApi: PostApi) {
 
     fun getUser(userId: Int): Observable<User> {

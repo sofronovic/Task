@@ -17,7 +17,10 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+/**
+ * PostFragment represents UI interface where post list should be displayed
+ *
+ **/
 class PostFragment : MviFragment<PostView, PostPresenter>(), PostView,
     SwipeRefreshLayout.OnRefreshListener {
 

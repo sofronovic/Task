@@ -7,6 +7,10 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
+/*
+ * UserLocalRepository abstraction layer over database calls
+ *
+ **/
 interface PostLocalRepository {
     fun getAll(): Single<List<Post>>
     fun insertAll(vararg posts: Post): Single<List<Long>>

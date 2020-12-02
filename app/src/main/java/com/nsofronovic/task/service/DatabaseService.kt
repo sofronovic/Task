@@ -6,8 +6,11 @@ import androidx.core.app.JobIntentService
 import com.nsofronovic.task.repository.local.PostLocalRepository
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import kotlin.random.Random
 
+/**
+ * DatabaseService background service used for removing data from database.
+ *
+ **/
 class DatabaseService : JobIntentService() {
 
     private val postLocalRepository: PostLocalRepository by inject()
@@ -23,6 +26,11 @@ class DatabaseService : JobIntentService() {
         }
     }
 
+    /**
+     * onHandleWork() once service is started, waits for 5 minutes and
+     * then delete all posts from Post table.
+     *
+     **/
     override fun onHandleWork(intent: Intent) {
         Timber.d("Starting background service")
         try {

@@ -5,8 +5,16 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
+/**
+ * NetworkUtil handle internet connectivity
+ *
+ **/
 class NetworkUtil {
 
+    /**
+     * isConnectedToInternet() check if device is connected to network
+     *
+     **/
     fun isConnectedToInternet(): Single<Boolean> {
         return ReactiveNetwork.checkInternetConnectivity()
             .subscribeOn(Schedulers.io())

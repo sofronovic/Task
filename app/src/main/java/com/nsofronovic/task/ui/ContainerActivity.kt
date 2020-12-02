@@ -1,16 +1,18 @@
 package com.nsofronovic.task.ui
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.nsofronovic.task.R
-import com.nsofronovic.task.service.DatabaseService
 import com.nsofronovic.task.service.ServiceManager
 import com.nsofronovic.task.ui.navigation.NavigationManager
 import org.koin.android.ext.android.inject
 
+/**
+ * ContainerActivity is defined as container for fragments.
+ * Holds a reference to NavigationController that is used for navigation
+ **/
 class ContainerActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController

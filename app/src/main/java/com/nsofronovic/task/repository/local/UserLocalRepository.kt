@@ -7,6 +7,10 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
+/*
+ * UserLocalRepository abstraction layer over database calls
+ *
+ **/
 interface UserLocalRepository {
     fun getUserById(userId: Int): Maybe<User>
     fun insert(user: User): Single<Long>
