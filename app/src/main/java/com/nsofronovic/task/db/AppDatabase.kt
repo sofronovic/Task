@@ -7,6 +7,11 @@ import com.nsofronovic.task.db.dao.UserDao
 import com.nsofronovic.task.model.Post
 import com.nsofronovic.task.model.User
 
+/**
+ * AppDatabase abstraction layer over SQLite database
+ *
+ * @param entities tables in database
+ **/
 @Database(entities = [Post::class, User::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun postDao(): PostDao

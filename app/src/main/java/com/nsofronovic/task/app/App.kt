@@ -10,6 +10,10 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
 
+/*
+ * App represents init point of Application.
+ * Used for setting up dependency injection and other 3rd party libraries.
+ **/
 class App : Application() {
 
     override fun onCreate() {

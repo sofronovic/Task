@@ -11,6 +11,10 @@ import com.nsofronovic.task.databinding.ViewPostItemBinding
 import com.nsofronovic.task.model.Post
 import io.reactivex.subjects.PublishSubject
 
+/**
+ * PostAdapter renders each post item to UI.
+ *
+ **/
 class PostAdapter(private val context: Context) :
     RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 

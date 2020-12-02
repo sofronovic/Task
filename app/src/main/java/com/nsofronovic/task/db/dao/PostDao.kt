@@ -5,6 +5,10 @@ import com.nsofronovic.task.model.Post
 import io.reactivex.Maybe
 import io.reactivex.Single
 
+/**
+ * PostDao contains the methods used for accessing the database
+ *
+ **/
 @Dao
 interface PostDao {
     @Query("SELECT * FROM post")

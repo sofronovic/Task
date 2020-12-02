@@ -94,13 +94,13 @@ class PostDetailsInteractor(
     fun generateDeletePostPartialState(): Observable<PostDetailsPartialState> {
         val currentPost = localPostRepository.getCurrentPost()
         return localPostRepository.delete(currentPost).flatMapObservable { deletedRows ->
-                if (deletedRows > 0) {
-                    localPostRepository.setDeletedPost(currentPost)
-                    Observable.just(PostDetailsPartialState.DeletedPostFromDatabase)
-                } else {
-                    Observable.just(PostDetailsPartialState.FailedToDeletePost)
-                }
+            if (deletedRows > 0) {
+                localPostRepository.setDeletedPost(currentPost)
+                Observable.just(PostDetailsPartialState.DeletedPostFromDatabase)
+            } else {
+                Observable.just(PostDetailsPartialState.FailedToDeletePost)
             }
+        }
     }
 
 }

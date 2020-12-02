@@ -1,7 +1,10 @@
 package com.nsofronovic.task.ui.post
 
 import com.nsofronovic.task.model.Post
-
+/**
+ * PostPartialState holds objects and data classes to represent state
+ *
+ **/
 sealed class PostPartialState {
     object LoadingPosts : PostPartialState()
     data class LoadedPosts(val posts: List<Post>) : PostPartialState()

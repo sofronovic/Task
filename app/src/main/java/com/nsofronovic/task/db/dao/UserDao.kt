@@ -8,6 +8,10 @@ import com.nsofronovic.task.model.User
 import io.reactivex.Maybe
 import io.reactivex.Single
 
+/**
+ * UserDao contains the methods used for accessing the database
+ *
+ **/
 @Dao
 interface UserDao {
 

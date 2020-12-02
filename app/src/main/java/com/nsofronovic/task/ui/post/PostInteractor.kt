@@ -6,7 +6,12 @@ import com.nsofronovic.task.repository.remote.PostRepository
 import com.nsofronovic.task.util.NetworkUtil
 import io.reactivex.Observable
 import io.reactivex.Single
-
+/**
+ * PostInteractor is defined as placeholder for business logic.
+ * PostInteractor offers the Observables stream Observable<PostPartialState> and
+ * broadcast a new PostPartialState each time the state changes.
+ *
+ **/
 class PostInteractor(
     private val postRepository: PostRepository,
     private val postLocalRepository: PostLocalRepository,

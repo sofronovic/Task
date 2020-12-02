@@ -10,7 +10,6 @@ import com.nsofronovic.task.repository.local.UserLocalRepository
 import com.nsofronovic.task.repository.local.UserLocalRepositoryImpl
 import com.nsofronovic.task.repository.remote.PostRepository
 import com.nsofronovic.task.repository.remote.UserRepository
-import com.nsofronovic.task.service.DatabaseService
 import com.nsofronovic.task.service.ServiceManager
 import com.nsofronovic.task.ui.navigation.NavigationManager
 import com.nsofronovic.task.ui.post.PostInteractor
@@ -24,6 +23,10 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Dependency injection modules
+ *
+ **/
 val mviModule = module {
     factory { PostPresenter(get()) }
     factory { PostInteractor(get(), get(), get()) }

@@ -6,7 +6,7 @@ import io.reactivex.Observable
 class PostDetailsPresenter(private val interactor: PostDetailsInteractor) :
     MviBasePresenter<PostDetailsView, PostDetailsViewState>() {
 
-    private lateinit var currentState: PostDetailsViewState
+    lateinit var currentState: PostDetailsViewState
 
     override fun bindIntents() {
         currentState = PostDetailsViewState()

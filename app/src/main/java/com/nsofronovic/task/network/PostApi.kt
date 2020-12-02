@@ -6,6 +6,10 @@ import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
 
+/**
+ * PostApi contains the methods used for accessing the data from server
+ *
+ **/
 interface PostApi {
 
     @GET("/posts")
