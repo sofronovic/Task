@@ -2,9 +2,8 @@ package com.nsofronovic.task.ui.post
 
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 
-class PostPresenter(val interactor: PostInteractor) :
+class PostPresenter(private val interactor: PostInteractor) :
     MviBasePresenter<PostView, PostViewState>() {
 
     private lateinit var currentState: PostViewState
@@ -14,13 +13,43 @@ class PostPresenter(val interactor: PostInteractor) :
 
         val initialIntent = intent(PostView::initialIntent)
             .switchMap {
-                interactor.generateInitialPartialState()
+                if (currentState.posts.isNullOrEmpty()) {
+                    interactor.generateInitialPartialState()
+                } else {
+                    currentState.posts?.let { posts ->
+                        interactor.generateLoadPostsFromStatePartialState(posts)
+                    }
+                }
+            }
+
+        val swipeToRefreshIntent = intent(PostView::swipeToRefreshIntent)
+            .switchMap {
+                interactor.generateSwipeToRefreshPartialState()
+            }
+
+        val onPostClickIntent = intent(PostView::onPostClickIntent)
+            .switchMap { postPosition ->
+                interactor.generatePostClickPartialState(currentState.posts?.get(postPosition))
+            }
+
+        val onPauseIntent = intent(PostView::onPauseIntent)
+            .switchMap {
+                interactor.generateOnPausePartialState()
+            }
+
+        val startServiceIntent = intent(PostView::startServiceIntent)
+            .switchMap {
+                interactor.generateStartServiceIntent()
             }
 
         val intentsObservable =
             Observable.mergeArray(
-                initialIntent
-            ).observeOn(AndroidSchedulers.mainThread())
+                initialIntent,
+                swipeToRefreshIntent,
+                onPostClickIntent,
+                onPauseIntent,
+                startServiceIntent
+            )
 
         subscribeViewState(
             intentsObservable.scan<PostViewState>(
@@ -34,7 +63,18 @@ class PostPresenter(val interactor: PostInteractor) :
         partialState: PostPartialState
     ): PostViewState {
         val newState = when (partialState) {
-            is PostPartialState.LoadedPostsPartialState -> previousState.copy(
+            is PostPartialState.LoadedPosts -> previousState.copy(
+                lastChangedState = partialState,
+                posts = partialState.posts
+            )
+            is PostPartialState.LoadedPostsFromDatabase -> previousState.copy(
+                lastChangedState = partialState,
+                posts = partialState.posts
+            )
+            is PostPartialState.PostClicked -> previousState.copy(
+                lastChangedState = partialState
+            )
+            is PostPartialState.LoadedPostsFromState -> previousState.copy(
                 lastChangedState = partialState,
                 posts = partialState.posts
             )

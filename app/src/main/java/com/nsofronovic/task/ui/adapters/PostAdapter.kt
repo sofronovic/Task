@@ -5,14 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jakewharton.rxbinding2.view.clicks
 import com.nsofronovic.task.R
 import com.nsofronovic.task.databinding.ViewPostItemBinding
 import com.nsofronovic.task.model.Post
+import io.reactivex.subjects.PublishSubject
 
 class PostAdapter(private val context: Context) :
     RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     private var posts: List<Post> = listOf()
+
+    val postClickListener = PublishSubject.create<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         return PostViewHolder(
@@ -26,6 +30,12 @@ class PostAdapter(private val context: Context) :
 
             holder.title.text = item.title
             holder.body.text = item.body.replaceAfter("\n", "")
+
+            holder.itemView
+                .clicks()
+                .map {
+                    position
+                }.subscribe(postClickListener)
         }
     }
 

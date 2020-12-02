@@ -28,7 +28,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="8dp"
-                android:textColor="#000"
+                android:textColor="@color/black"
                 android:textSize="20sp"
                 tools:text="sunt aut facere repellat provident occaecati excepturi optio reprehenderit" />
 
@@ -39,7 +39,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="2dp"
-                android:textColor="#717171"
+                android:textColor="@android:color/darker_gray"
                 android:textSize="18sp"
                 tools:text="ut aspernatur corporis harum " />
 
