@@ -2,6 +2,7 @@ package com.nsofronovic.task.repository.local
 
 import com.nsofronovic.task.db.dao.PostDao
 import com.nsofronovic.task.model.Post
+import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -10,6 +11,7 @@ interface PostLocalRepository {
     fun getAll(): Single<List<Post>>
     fun insertAll(vararg posts: Post): Single<List<Long>>
     fun delete(post: Post): Single<Int>
+    fun deleteAll(): Single<Int>
 
     fun setCurrentPost(post: Post)
     fun getCurrentPost(): Post
@@ -38,6 +40,12 @@ class PostLocalRepositoryImpl(private val postDao: PostDao) : PostLocalRepositor
 
     override fun delete(post: Post): Single<Int> {
         return postDao.delete(post)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    override fun deleteAll(): Single<Int> {
+        return postDao.deleteAll()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }

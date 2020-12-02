@@ -3,6 +3,7 @@ package com.nsofronovic.task.ui.post
 import com.nsofronovic.task.model.Post
 import com.nsofronovic.task.repository.local.PostLocalRepository
 import com.nsofronovic.task.repository.remote.PostRepository
+import com.nsofronovic.task.service.DatabaseService
 import com.nsofronovic.task.util.NetworkUtil
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -84,7 +85,9 @@ class PostInteractor(
     }
 
     fun generatePostClickPartialState(post: Post?): Observable<PostPartialState> {
-        post?.let { postLocalRepository.setCurrentPost(it) }
+        post?.let {
+            postLocalRepository.setCurrentPost(it)
+        }
         return Observable.just(PostPartialState.PostClicked)
     }
 
@@ -102,5 +105,9 @@ class PostInteractor(
         }
 
         return Observable.just(PostPartialState.LoadedPostsFromState(newPostList))
+    }
+
+    fun generateStartServiceIntent(): Observable<PostPartialState> {
+        return Observable.just(PostPartialState.StartDatabaseService)
     }
 }
